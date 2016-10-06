@@ -1,0 +1,10 @@
+{
+  "confirm": {
+    "API_KEY": "{YOUR_API_KEY}"
+  },
+  "twilio": {
+    "ACCOUNT_SID": "{YOUR_TWILIO_ACCOUNT_SID}",
+    "ACCOUNT_TOKEN": "{YOUR_TWILIO_ACCOUNT_TOKEN}",
+    "FROM_NUMBER": "{YOUR_TWILIO_PHONE_NUMBER}"
+  }
+}

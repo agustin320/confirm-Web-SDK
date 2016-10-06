@@ -1,0 +1,16 @@
+{
+  "name": "confirm-sdk-sample-server",
+  "version": "1.0.0",
+  "description": "Server component showcasing how to mediate requests to Confirm's API",
+  "main": "app.js",
+  "author": "Confirm.io",
+  "license": "MIT",
+  "dependencies": {
+    "body-parser": "^1.15.0",
+    "express": "^4.13.4",
+    "mongojs": "^2.4.0",
+    "node-uuid": "^1.4.7",
+    "request": "^2.69.0",
+    "twilio": "^2.10.0"
+  }
+}
