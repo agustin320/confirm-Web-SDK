@@ -1,6 +1,6 @@
 {
   "name": "confirm-sdk-sample-client",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "[Confirm.io](http://www.confirm.io/) provides simple, safe, and secure mobile ID authentication solutions. Our cloud API and paired image capture SDK empower applications to more seamlessly collect customer information and authenticate the identity of their users.",
   "main": "sample.js",
   "scripts": {

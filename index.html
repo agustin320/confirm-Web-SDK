@@ -21,50 +21,101 @@
             <div class="container-fluid full-height position-relative">
                 <div class="form-wrapper">
                     <form id="twilio-form">
-                        <div class="card " id="twilio-card">
+                        <div class="card" id="twilio-card">
                             <h3 class="text-center extra-padding-bottom-md">Confirm.io web-to-mobile demo</h3>
                             <h5>Enter <strong><i>name and phone number</i></strong> below and we will walk you through the process on your mobile device</h5>
                             <div class="extra-padding-top-sm clearfix">
                                 <div class=" extra-margin-top-md">
-                                    <input type="text" id="first-name" placeholder="First Name" required>
+                                    <div class="input-group">
+                                        <input type="text" id="first-name" required>
+                                        <label>First Name</label>
+                                    </div>
                                 </div>
                                 <div class="form-group extra-margin-top-md">
-                                    <input type="text" id="last-name" placeholder="Last Name" required>
+                                    <div class="input-group">
+                                        <input type="text" id="last-name" required>
+                                        <label>Last Name</label>
+                                    </div>
                                 </div>
                                 <div class="form-group extra-margin-top-md extra-margin-bottom-20px">
-                                    <input type="tel" id="phone" placeholder="Mobile Phone Number" required>
+                                    <input type="tel" class="tel" id="phone" placeholder="Mobile Number" required>
                                 </div>
                                 <button class="btn-submit pull-right" type="submit" id="submit-number" >
                                     <span>Submit</span>
                                 </button>
                             </div>
                         </div>
-                        <div class="card hide" id="loading-card">
-                            <h3 class="text-center">Text message sent</h3>
-                            <div class="text-center">
-                                <div class="spinner spinner-4"><span></span><span></span><span></span></div>
-                            </div>
-                            <h5 class="text-center">Please click the link to complete the process on your mobile device.</h5>
-                        </div>
-                        <div class="card hide" id="result-card">
-                            <div class="text-center">
-                                <div id="result-pass" class="hide">
-                                    <h2 class="text-center">You have successfully verified your ID!</h2>
-                                    <h4></h4>
-                                    <img class="result-icon-wrapper extra-padding-top-md extra-padding-bottom-md"  src="./images/pass.png"/>
-                                </div>
-                                <div id="result-fail" class="hide">
-                                    <h3 class="text-center">ID Auth Unsuccessful</h3>
-                                    <img class="result-icon-wrapper extra-padding-top-md extra-padding-bottom-md"  src="./images/fail.png"/>
-                                    <a class="reload-link"><h3>Retry</h3></a>
-                                </div>
-                                <div id="result-unknown" class="hide">
-                                    <img class="result-icon-wrapper extra-padding-bottom-md"  src="./images/unknown.png"/>
-                                    <a class="reload-link"><h3>Retry</h3></a>
-                                </div>
-                            </div>
-                        </div>
                     </form>
+                    <div class="card hide" id="loading-card">
+                        <h3 class="text-center">Text message sent</h3>
+                        <div class="text-center">
+                            <div class="spinner spinner-4"><span></span><span></span><span></span></div>
+                        </div>
+                        <h5 class="text-center">Please click the link to complete the process on your mobile device.</h5>
+                    </div>
+                    <div class="panel panel-default hide" id="desktop-auth-result-panel">
+                        <div class="panel-heading">
+                            <h4>Bio Result</h4>
+                        </div>
+                        <div class="panel-content clearfix">
+                            <div class="container-fluid">
+                                <div class="input-group extra-margin-top-sm">
+                                    <input type="text" id="desktop-auth-result-first-name">
+                                    <label>First Name</label>
+                                </div>
+                                <div class="input-group  extra-margin-top-md">
+                                    <input type="text" id="desktop-auth-result-last-name">
+                                    <label>Last Name</label>
+                                </div>
+                                <div class="input-group  extra-margin-top-md">
+                                    <input type="text" id="desktop-auth-result-dob" >
+                                    <label>D.O.B</label>
+                                </div>
+                                <div class="input-group extra-margin-top-md">
+                                    <input type="text" id="desktop-auth-result-gender" >
+                                    <label>Gender</label>
+                                </div>
+                                <div class="input-group  extra-margin-top-md">
+                                    <input type="text" id="desktop-auth-result-address" >
+                                    <label>Address</label>
+                                </div>
+                                <div class="input-group  extra-margin-top-md">
+                                    <input type="text" id="desktop-auth-result-city" >
+                                    <label>City</label>
+                                </div>
+                                <div class="input-group  extra-margin-top-md">
+                                    <input type="text" id="desktop-auth-result-state" >
+                                    <label>State</label>
+                                </div>
+                                <div class="input-group  extra-margin-top-md extra-margin-bottom-20px">
+                                    <input type="text" id="desktop-auth-result-zip" >
+                                    <label>Zip Code</label>
+                                </div>
+                                <button class="btn-submit pull-right" type="button" id="next-button" >
+                                    <span>Next</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card hide" id="result-card">
+                        <div class="text-center">
+                            <div id="result-pass" class="hide">
+                                <h2 class="text-center">You have successfully verified your ID!</h2>
+                                <h4></h4>
+                                <img class="result-icon-wrapper extra-padding-top-md extra-padding-bottom-md"  src="./images/pass.png"/>
+                            </div>
+                            <div id="result-fail" class="hide">
+                                <h3 class="text-center">ID Auth Unsuccessful</h3>
+                                <img class="result-icon-wrapper extra-padding-top-md extra-padding-bottom-md"  src="./images/fail.png"/>
+                                <h4>Please submit your ID again from your mobile device</h4>
+                            </div>
+                            <div id="result-unknown" class="hide">
+                                <img class="result-icon-wrapper extra-padding-bottom-md"  src="./images/unknown.png"/>
+                                <a class="reload-link"><h3>Retry</h3></a>
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
             </div>
             <section class="section section-blue section-banner">

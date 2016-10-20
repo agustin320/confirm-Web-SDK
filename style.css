@@ -264,7 +264,11 @@ h1, h2, h3, h4, h5, h6 {
     width: 350px;
 }
 
-input {
+#desktop-auth-result-panel {
+    width: 400px;
+}
+
+input.tel {
     width: 100%;
     display: block;
     border: none;
@@ -278,12 +282,12 @@ input {
     transition: all 0.3s cubic-bezier(0.64, 0.09, 0.08, 1);
     color: black;
 }
-input:focus, input:valid {
+input.tel:focus, input.tel:valid {
     box-shadow: none;
     outline: none;
     background-position: 0 0;
 }
-input:focus::-webkit-input-placeholder, input:valid::-webkit-input-placeholder {
+input.tel:focus::-webkit-input-placeholder, input.tel:valid::-webkit-input-placeholder {
     color: rgb(53, 162, 216);
     font-size: 14px;
     -webkit-transform: translateY(-20px);
@@ -291,7 +295,7 @@ input:focus::-webkit-input-placeholder, input:valid::-webkit-input-placeholder {
     visibility: visible !important;
 }
 
-input::-webkit-input-placeholder, button {
+input.tel::-webkit-input-placeholder, button {
     font-family: 'roboto', sans-serif;
     -webkit-transition: all 0.2s ease-in-out;
     transition: all 0.2s ease-in-out;
@@ -350,4 +354,72 @@ input::-webkit-input-placeholder, button {
 td {
     font-size: 16px;
     border-top: 1px solid #f4f8fb !important;
+}
+
+.confirm-loading-container {
+    border: none !important;
+}
+
+.alert-success {
+    color: black;
+    background: #6EC7B6;
+    border: 1px solid #6EC7B6;
+}
+
+.alert-danger {
+    color: black;
+    background: #FF434C;
+    border: 1px solid #FF434C;
+}
+
+.alert-warning {
+    color: black;
+    background: #F5C77E;
+    border: 1px solid #F5C77E;
+}
+
+input {
+    background: none;
+    width: 100%;
+    border: solid 2px rgb(53, 162, 216);
+    font-size: 18px;
+    display: inline-block;
+    border-radius: 0;
+}
+input:focus, input:active {
+    outline: none;
+}
+input[type="text"], input[type="tel"] {
+    border: none;
+    border-bottom: solid 2px rgb(53, 162, 216);
+}
+
+.input-group {
+    display: block;
+    position: relative;
+}
+.input-group input {
+    padding-top: 15px;
+    padding-bottom: 5px;
+}
+.input-group label {
+    position: absolute;
+    top: 50%;
+    left: 0px;
+    -webkit-transform: translateY(-50%);
+    transform: translateY(-50%);
+    font-family: 'roboto', sans-serif;
+    font-size: 14px;
+    color: #ccc;
+    font-weight: 300;
+    pointer-events: none;
+    -webkit-transition: all 0.15s ease-out 0s;
+    transition: all 0.15s ease-out 0s;
+}
+.input-group input:focus + label,
+.input-group input.has-value + label {
+    top: 1px;
+    font-weight: 300;
+    font-size: 12px;
+    color: rgb(53, 162, 216);
 }

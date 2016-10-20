@@ -1,6 +1,6 @@
 {
   "name": "confirm-sdk-sample-server",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Server component showcasing how to mediate requests to Confirm's API",
   "main": "app.js",
   "author": "Confirm.io",
@@ -8,6 +8,8 @@
   "dependencies": {
     "body-parser": "^1.15.0",
     "express": "^4.13.4",
+    "google-auth-library": "^0.9.8",
+    "googleapis": "^14.0.0",
     "mongojs": "^2.4.0",
     "node-uuid": "^1.4.7",
     "request": "^2.69.0",

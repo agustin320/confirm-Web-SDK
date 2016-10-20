@@ -1,9 +1,13 @@
 // ----------------------------------------------------- //
 // Configuration
+//
+// Be sure to replace the CONFIRM_SAMPLE_SERVER_ADDRESS
+// with the IP or hostname of the machine running the
+// server code embedded with this sample.
 // ----------------------------------------------------- //
 var isTwilioEnabled = true,
     isSessionPersistenceEnabled = true,
-    API_URL = 'http://{YOUR_SERVER_ADDRESS}/';
+    API_URL = 'http://{CONFIRM_SAMPLE_SERVER_ADDRESS}:8080/';
 
 
 $(document).ready(function() {
@@ -11,13 +15,13 @@ $(document).ready(function() {
         return window.navigator.userAgent.match(/(iPad)|(iPhone)|(iPod)|(android)|(webOS)/i);
     };
 
-    var sendNotification = function(type, message) {
+    var sendNotification = function(type, delay, message) {
         $.notify({
             message: message
         }, {
             type: type,
             allow_dismiss: true,
-            delay: 1000,
+            delay: delay,
             animate: {
                 enter: 'animated fadeInDown',
                 exit: 'animated fadeOutUp'
@@ -25,7 +29,7 @@ $(document).ready(function() {
         });
     };
 
-    var initResultRender = function() {
+    var initResultRenderOnMobile = function() {
         $('#confirm-sample-auth-result').addClass('hide');
         $('#confirm-auth-result-first-name').html('');
         $('#confirm-auth-result-last-name').html('');
@@ -42,9 +46,9 @@ $(document).ready(function() {
         $('#confirm-auth-result-doc-number').html('');
     };
 
-    var renderBioResult = function(data) {
+    var renderBioResultOnMobile = function(data) {
         if (data) {
-            initResultRender();
+            initResultRenderOnMobile();
             $('#confirm-sample-auth-result').removeClass('hide').addClass('animated bounceInUp');
             $('#confirm-auth-result-first-name').append(data.identity.bio.firstName);
             $('#confirm-auth-result-last-name').append(data.identity.bio.lastName);
@@ -62,17 +66,53 @@ $(document).ready(function() {
         }
     };
 
-    var cleanFailureReasons = function() {
+    var initResultRenderOnDesktop = function() {
+        $('#desktop-auth-result-panel').addClass('hide');
+        $('#desktop-auth-result-first-name').val('');
+        $('#desktop-auth-result-last-name').val('');
+        $('#desktop-auth-result-first-dob').val('');
+        $('#desktop-auth-result-address').val('');
+        $('#desktop-auth-result-city').val('');
+        $('#desktop-auth-result-state').val('');
+        $('#desktop-auth-result-zip').val('');
+        $('#desktop-auth-result-gender').val('');
+    };
+
+    var renderBioResultOnDesktop = function(data) {
+        if (data) {
+            initResultRenderOnDesktop();
+            $('#desktop-auth-result-panel').removeClass('hide').addClass('animated bounceInRight');
+            $('#desktop-auth-result-first-name').val(data.identity.bio.firstName).addClass('has-value');
+            $('#desktop-auth-result-last-name').val(data.identity.bio.lastName).addClass('has-value');
+            $('#desktop-auth-result-dob').val(data.identity.bio.dob).addClass('has-value');
+            $('#desktop-auth-result-address').val(data.identity.bio.address).addClass('has-value');
+            $('#desktop-auth-result-city').val(data.identity.bio.city).addClass('has-value');
+            $('#desktop-auth-result-state').val(data.identity.bio.state).addClass('has-value');
+            $('#desktop-auth-result-zip').val(data.identity.bio.zip).addClass('has-value');
+            $('#desktop-auth-result-gender').val(data.identity.bio.gender).addClass('has-value');
+        }
+    };
+
+    var cleanFailureReasonsOnMobile = function() {
         $('#confirm-sample-auth-fail-results').addClass('hide');
         $('#confirm-auth-fail-results-display').html('');
     };
 
-    var renderFailureReasons = function(failureReasons) {
+    var renderFailureReasonsOnMobile = function(failureReasons) {
         if (failureReasons) {
             $('#confirm-sample-auth-fail-results').removeClass('hide');
             $.each(failureReasons, function(index, reason) {
                 $('#confirm-auth-fail-results-display').append(reason);
             });
+        }
+    };
+
+    var renderResultOnMobile = function(data) {
+        renderBioResultOnMobile(data);
+        cleanFailureReasonsOnMobile();
+        if (data.failureReasons && data.failureReasons.length > 0) {
+            var failureReasons = data.failureReasons;
+            renderFailureReasonsOnMobile(failureReasons);
         }
     };
 
@@ -99,8 +139,13 @@ $(document).ready(function() {
                 } else {
                     $('#loading-card').addClass('hide');
                     if (data.data.confirmAuthResult.authResult === 'pass') {
-                        $('#result-card').removeClass('hide').addClass('animated bounceInRight');
-                        $('#result-pass').removeClass('hide');
+                        $.ajax({
+                            type: 'GET',
+                            url: API_URL + 'ids/' + data.data.confirmAuthResult.idGuid
+                        }).done(function(response) {
+                            var data = response.data;
+                            renderBioResultOnDesktop(data);
+                        });
                     } else if (data.data.confirmAuthResult.authResult === 'fail') {
                         $('#result-card').removeClass('hide').addClass('animated bounceInRight');
                         $('#result-fail').removeClass('hide');
@@ -127,24 +172,52 @@ $(document).ready(function() {
                     authUrl: window.location.href
                 }
             }).done(function(response) {
-                userId = response.id;
-                $('#twilio-card').addClass('hide');
-                $('#loading-card').removeClass('hide').addClass('animated bounceInRight');
-                getAuthResultFromDB(userId);
-            }).fail(function() {
-                sendNotification('danger', 'Fail to send link for ID auth');
+                if (response.id !== undefined && response.id.length > 0) {
+                    userId = response.id;
+                    $('#twilio-card').addClass('hide');
+                    $('#loading-card').removeClass('hide').addClass('animated bounceInRight');
+                    getAuthResultFromDB(userId);
+                } else if (response.message !== undefined && response.message.length > 0) {
+                    sendNotification('success', 3000, response.message);
+                }
+            }).fail(function(error) {
+                if (error.responseText) {
+                    var errorMessage = JSON.parse(error.responseText);
+                    if (errorMessage.message.length > 0) {
+                        sendNotification(errorMessage.notificationStatus, 3000, errorMessage.message);
+                    } else {
+                        sendNotification('warning', 3000, 'Fail to send link for ID auth');
+                    }
+                } else {
+                    sendNotification('danger', 3000, 'Server Connection Error');
+                }
             });
         });
 
         $('.reload-link').click(function() {
             location.reload();
         });
+
+        $('input').focusout(function() {
+            var text = $(this).val();
+            if (text === '') {
+                $(this).removeClass('has-value');
+            } else {
+                $(this).addClass('has-value');
+            }
+        });
+
+        $('#next-button').click(function(){
+            $('#desktop-auth-result-panel').addClass('hide');
+            $('#result-card').removeClass('hide').addClass('animated bounceInRight');
+            $('#result-pass').removeClass('hide');
+        })
     };
 
     var renderMobileDemo = function() {
         $('#confirm-sample-mobile-wrapper').removeClass('hide');
         $('#confirm-sample-auth-form').removeClass('hide');
-        getParameterByName('userId');
+
         //Inject confirm auth form by given a div id.
         var confirmSDK = ConfirmSDK.init('confirm-sample-auth-form');
 
@@ -171,23 +244,22 @@ $(document).ready(function() {
                     url: API_URL + 'ids/' + idGuid
                 }).done(function(response) {
                     var data = response.data;
-                    var idGuid = data.guid;
-                    var status = data.status;
-                    var userId = getParameterByName('userId');
-                    $.ajax({
-                        type: 'PUT',
-                        url: API_URL + 'users/' + userId,
-                        dataType: 'json',
-                        data: {
-                            idGuid: idGuid,
-                            authResult: status
-                        }
-                    });
-                    renderBioResult(data);
-                    cleanFailureReasons();
-                    if (data.failureReasons && data.failureReasons.length > 0) {
-                        var failureReasons = data.failureReasons;
-                        renderFailureReasons(failureReasons);
+                    if (isSessionPersistenceEnabled && getParameterByName('userId') !== null) {
+                        var idGuid = data.guid;
+                        var status = data.status;
+                        var userId = getParameterByName('userId');
+                        $.ajax({
+                            type: 'PUT',
+                            url: API_URL + 'users/' + userId,
+                            dataType: 'json',
+                            data: {
+                                idGuid: idGuid,
+                                authResult: status
+                            }
+                        });
+                        renderResultOnMobile(data);
+                    } else {
+                        renderResultOnMobile(data);
                     }
                 });
             });
@@ -198,18 +270,22 @@ $(document).ready(function() {
         });
     };
 
-    // Check if users is using desktop or mobile
+    //Check if users is using desktop or mobile
     if (isTwilioEnabled && !isOnMobileBrowser()) {
         renderDesktopDemo();
-    } else {
-        if (isSessionPersistenceEnabled) {
-            if (window.location.href.indexOf('userId') === -1) {
-                renderDesktopDemo();
-            } else {
+    } else if (isOnMobileBrowser()) {
+        if (getParameterByName('userId') !== null) {
+            if (getParameterByName('userId').length > 0) {
+                renderMobileDemo();
+            }
+        } else if (getParameterByName('mobile') !== null) {
+            if (getParameterByName('mobile') === 'true') {
                 renderMobileDemo();
             }
         } else {
-            renderMobileDemo();
+            renderDesktopDemo();
         }
+    } else {
+        renderMobileDemo();
     }
 });
